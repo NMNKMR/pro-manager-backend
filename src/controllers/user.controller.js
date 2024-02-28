@@ -70,7 +70,7 @@ const updateAccountInfo = asyncHandler(async (req, res)=> {
     if(oldPassword && newPassword) {
         const isPasswordCorrect = await user.isPasswordValid(oldPassword)
 
-        if(!isPasswordCorrect) throw new ApiError(401, "Password is incorrect");
+        if(!isPasswordCorrect) throw new ApiError(401, "Old password is incorrect");
 
         user.password = newPassword;
     }
