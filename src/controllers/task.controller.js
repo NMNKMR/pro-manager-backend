@@ -152,7 +152,8 @@ const getTasksAnalytics = asyncHandler(async (req, res)=> {
         }], 
         [{
             $match: {
-              user: req.user?._id
+              user: req.user?._id,
+              state: {$ne: "done"},
             }
           }, {
             $group: {
@@ -169,7 +170,7 @@ const getTasksAnalytics = asyncHandler(async (req, res)=> {
         [{
             $match: {
               user: req.user?._id,
-              dueDate: {$ne: null},
+              dueDate: {$ne: ""},
               state: {$ne: "done"},
             }
           }, {
@@ -192,8 +193,8 @@ const getTasksAnalytics = asyncHandler(async (req, res)=> {
 
     const tasksCount = {};
 
-    for (const {name, count} of [...stateAnalytics[0].counts, ...priorityAnalytics[0].counts, dueDateAnalytics[0]]) {
-        tasksCount[name] = count;
+    for (const {name, count} of [...(stateAnalytics[0]?.counts ?? []), ...(priorityAnalytics[0]?.counts ?? []), (dueDateAnalytics[0] ?? {})]) {
+        if(name) tasksCount[name] = count;
     }
 
     res.status(200).json(
